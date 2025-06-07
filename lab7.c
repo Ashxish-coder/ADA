@@ -1,70 +1,50 @@
-#include <stdio.h>
-#define MAX 50
-int p[MAX], w[MAX], x[MAX];
-double maxprofit;
-int n, m, i;
-void greedyKnapsack(int n, int w[], int p[], int m)
-{
-    double ratio[MAX];
-    for (i = 0; i < n; i++)
-    {
-        ratio[i] = (double)p[i] / w[i];
-    }
-
-    for (i = 0; i < n - 1; i++)
-    {
-        for (int j = i + 1; j < n; j++)
-        {
-            if (ratio[i] < ratio[j])
-            {
-                double temp = ratio[i];
-                ratio[i] = ratio[j];
-                ratio[j] = temp;
-
-                int temp2 = w[i];
-                w[i] = w[j];
-                w[j] = temp2;
-
-                temp2 = p[i];
-                p[i] = p[j];
-                p[j] = temp2;
-            }
-        }
-    }
-    int currentWeight = 0;
-    maxprofit = 0.0;
-    for (i = 0; i < n; i++)
-    {
-        if (currentWeight + w[i] <= m)
-        {
-            x[i] = 1; // Item i is selected
-            currentWeight += w[i];
-            maxprofit += p[i];
-        }
-        else
-        {
-            x[i] = (m - currentWeight) / (double)w[i];
-            maxprofit += x[i] * p[i];
+ #include<stdio.h> 
+ 
+int n,m,p[10],w[10]; 
+void greedy_knapsack() 
+{ 
+    float max, profit=0; 
+    int k=0,i,j; 
+    printf("item included is :"); 
+    for(i=0;i<n;i++) 
+    { 
+        max=0; 
+        for(j=0;j<n;j++) 
+        { 
+            if(((float)p[j])/w[j] > max) 
+            { 
+                k=j; 
+                max=((float)p[j])/w[j]; 
+            } 
+        } 
+        if(w[k] <= m ) 
+        { 
+            printf("%d",k); 
+            m = m - w[k]; 
+            profit=profit+p[k]; 
+            p[k]=0; 
+        } 
+        else 
             break;
-        }
-    }
-    printf("Optimal solution for greedy method: %.1f\n", maxprofit);
-    printf("Solution vector for greedy method: ");
-    for (i = 0; i < n; i++)
-        printf("%d\t", x[i]);
-}
-int main()
-{
-    printf("Enter the number of objects: ");
-    scanf("%d", &n);
-    printf("Enter the objects' weights: ");
-    for (i = 0; i < n; i++)
-        scanf("%d", &w[i]);
-    printf("Enter the objects' profits: ");
-    for (i = 0; i < n; i++)
-        scanf("%d", &p[i]);
-    printf("Enter the maximum capacity: ");
-    scanf("%d", &m);
-    greedyKnapsack(n, w, p, m);
-    return 0;
-}
+    } 
+    printf("Discrete Knapsack profit = %f\n",profit); 
+    printf("Continuous Knapsack also includes item %d with portion: %f\n", k, (float)m)/w[k]); 
+    profit = profit + ((float)m)/w[k] * p[k]; 
+    printf("Continuous Knapsack profit = %f\n",profit); 
+} 
+         
+int main()  
+{ 
+    int i; 
+    printf("Enter the no. of items: "); 
+    scanf("%d",&n); 
+    printf("Enter the weights of n items: "); 
+    for(i=0;i<n;i++) 
+        scanf("%d",&w[i]); 
+    printf("Enter the prices of n items: "); 
+    for(i=0;i<n;i++) 
+        scanf("%d",&p[i]); 
+    printf("Enter the capacity of Knapsack: "); 
+    scanf("%d",&m); 
+    greedy_knapsack();        
+} 
