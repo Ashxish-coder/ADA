@@ -1,109 +1,56 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-void merge(int arr[], int left, int mid, int right)
-{
-    int i, j, k;
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-
-    int *L = (int *)malloc(n1 * sizeof(int));
-    int *R = (int *)malloc(n2 * sizeof(int));
-
-    for (i = 0; i < n1; i++)
-        L[i] = arr[left + i];
-    for (j = 0; j < n2; j++)
-        R[j] = arr[mid + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = left;
-
-    while (i < n1 && j < n2)
-    {
-        if (L[i] <= R[j])
-        {
-            arr[k] = L[i];
-            i++;
-        }
-        else
-        {
-            arr[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-
-    while (i < n1)
-    {
-        arr[k] = L[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2)
-    {
-        arr[k] = R[j];
-        j++;
-        k++;
-    }
-
-    free(L);
-    free(R);
-}
-
-void mergeSort(int arr[], int left, int right)
-{
-    if (left < right)
-    {
-        int mid = left + (right - left) / 2;
-
-        mergeSort(arr, left, mid);
-        mergeSort(arr, mid + 1, right);
-
-        merge(arr, left, mid, right);
-    }
-}
-
-void generateRandomArray(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-        arr[i] = rand() % 100000;
-}
-
-int main()
-{
-    int n;
-    printf("Enter the number of elements: ");
-    scanf("%d", &n);
-
-    if (n <= 5000)
-    {
-        printf("Please enter a value greater than 5000\n");
-        return 1;
-    }
-
-    int *arr = (int *)malloc(n * sizeof(int));
-    if (arr == NULL)
-    {
-        printf("Memory allocation failed\n");
-        return 1;
-    }
-
-    generateRandomArray(arr, n);
-
-    clock_t start = clock();
-    for (int i = 0; i < 1000; i++)
-    {
-        mergeSort(arr, 0, n - 1);
-    }
-    clock_t end = clock();
-
-    double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC / 1000.0;
-
-    printf("Time taken to sort %d elements: %f seconds\n", n, time_taken);
-
-    free(arr);
-    return 0;
+#include<stdio.h> 
+#include<stdlib.h>  
+#include<time.h> 
+ 
+int count=0; 
+void merge(int a[], int low,int mid,int high) 
+{ 
+     int i,j,k,c[10000]; 
+      
+     i=low, j=mid+1, k=0; 
+ while((i<=mid) && (j<=high)) 
+ {        
+  count++; 
+  if(a[i]<a[j]) 
+   c[k++]=a[i++]; 
+  else 
+   c[k++]=a[j++]; 
+ }  
+ while(i<=mid) 
+  c[k++]=a[i++]; 
+ while(j<=high) 
+  c[k++]=a[j++]; 
+ for(i=low,j=0;j<k;i++, j++) 
+  a[i]=c[j]; 
+} 
+ 
+void merge_sort(int a[], int low, int high) 
+{ 
+     int mid; 
+ if(low < high) 
+ {         
+  mid=(low+high)/2; 
+  merge_sort(a,low,mid); 
+  merge_sort(a,mid+1,high); 
+  merge(a,low,mid,high); 
+ } 
+} 
+ 
+int main() 
+{ 
+ int a[10000],n,i; 
+ printf("Enter the number of elements in an array:"); 
+ scanf("%d",&n); 
+ printf("All the elements:"); 
+ srand(time(0)); 
+ for(i=0;i<n;i++) 
+ { 
+  a[i]=rand(); 
+  printf("%d ",a[i]); 
+ } 
+ merge_sort(a,0,n-1); 
+ printf("\nAfter sorting\n"); 
+ for(i=0;i<n;i++) 
+  printf("%d  ", a[i]); 
+ printf("\nNumber of basic operations = %d\n",count); 
 }
